@@ -8,7 +8,6 @@ import createSagaMiddleware from "redux-saga";
 import App from "./components/App";
 import reducers from "./reducers";
 import rootSaga from "./sagas";
-import * as serviceWorker from "./serviceWorker";
 
 // Axios Config
 axios.defaults.withCredentials = true;
@@ -29,8 +28,3 @@ ReactDOM.render(
   </Provider>,
   document.getElementById("root")
 );
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
