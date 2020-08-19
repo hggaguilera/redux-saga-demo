@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { connect } from "react-redux";
-import { Col, Container, Row } from "reactstrap";
+import { Alert, Col, Container, Row } from "reactstrap";
 import {
   createUserRequest,
   deleteUserRequest,
   getUsersRequest,
+  usersError,
 } from "../actions/users";
 import NewUser from "./NewUser";
 import UsersList from "./UsersList";
@@ -13,11 +14,20 @@ const App = ({
   createUserRequest,
   getUsersRequest,
   deleteUserRequest,
-  users,
+  usersError,
+  users: { items, error },
 }) => {
-  useEffect(() => {
+  const requestUserCallback = useCallback(() => {
     getUsersRequest();
-  });
+  }, [getUsersRequest]);
+
+  useEffect(() => {
+    requestUserCallback();
+  }, [requestUserCallback]);
+
+  const handleCloseAlert = () => {
+    usersError({ error: null });
+  };
 
   const handleSubmit = ({ firstName, lastName }) => {
     createUserRequest({ firstName, lastName });
@@ -32,8 +42,11 @@ const App = ({
       <Container>
         <Row className="pt-4">
           <Col sm={6} className="offset-3">
+            <Alert color="danger" isOpen={!!error} toggle={handleCloseAlert}>
+              {error}
+            </Alert>
             <NewUser onSubmit={handleSubmit} />
-            <UsersList users={users.items} onDeleteUser={handleDeleteUser} />
+            <UsersList users={items} onDeleteUser={handleDeleteUser} />
           </Col>
         </Row>
       </Container>
@@ -45,4 +58,5 @@ export default connect(({ users }) => ({ users }), {
   createUserRequest,
   getUsersRequest,
   deleteUserRequest,
+  usersError,
 })(App);
